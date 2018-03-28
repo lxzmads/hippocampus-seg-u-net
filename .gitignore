@@ -1,5 +1,5 @@
 __pycache__/
 data/
-config/
+config.py
 images/
 segs/

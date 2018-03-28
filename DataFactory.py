@@ -11,7 +11,7 @@ import tensorlayer as tl
 import nibabel as nib
 import numpy as np
 ###########################
-
+import config
 # import my modules
 
 ###########################
@@ -29,7 +29,7 @@ class DataPreprocessor(object):
     @modified: 2018-03-20
     @version: 0.1
     """
-    def __init__(self, imgsPath='atlas-part1/', segsPath='label-part1/', saveDir='data/train_test_all/'):
+    def __init__(self, imgsPath=config.IMAGE_PATH, segsPath=config.SEGS_PATH, saveDir=config.SAVE_DIR):
         try:
             self.__imgsPath = imgsPath
             self.__segsPath = segsPath
