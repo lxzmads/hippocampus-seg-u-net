@@ -30,11 +30,14 @@ class DataPreprocessor(object):
     @version: 0.1
     """
     def __init__(self, imgsPath='atlas-part1/', segsPath='label-part1/', saveDir='data/train_test_all/'):
-        self.__imgsPath = imgsPath
-        self.__segsPath = segsPath
-        self.__saveDir = saveDir
-        if not os.path.exists(saveDir):
-            os.makedirs(saveDir)
+        try:
+            self.__imgsPath = imgsPath
+            self.__segsPath = segsPath
+            self.__saveDir = saveDir
+            if not os.path.exists(saveDir):
+                os.makedirs(saveDir)
+        except Exception as why:
+            traceback.print_exc(why)
 
     def __checkDim(self,imgData):
         # check the shape of image
