@@ -13,7 +13,7 @@ import model
 
 def train(X_train, y_train):
     ###======================== HYPER-PARAMETERS ============================###
-    #batch_size = 1
+    batch_size = 1
     lr = 0.0001 
     # lr_decay = 0.5
     # decay_every = 100
@@ -25,8 +25,8 @@ def train(X_train, y_train):
     sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True))
     
     ###======================== DEFIINE MODEL =======================###
-    t_image = tf.placeholder('float32', shape=None, name='input_image')
-    t_seg = tf.placeholder('float32', shape=None, name='target_segment')
+    t_image = tf.placeholder('float32', shape=[batch_size,256,256,1], name='input_image')
+    t_seg = tf.placeholder('float32', shape=[batch_size,256,256,1], name='target_segment')
     ## train inference
     net = model.u_net(t_image, is_train=True, reuse=False, n_out=1)
     
@@ -48,17 +48,17 @@ def train(X_train, y_train):
     for epoch in range(0, n_epoch+1):
         epoch_time = time.time()
         total_dice, n_batch = 0, 0
-        for image, label in X_train, y_train:
+        #for image, label in X_train, y_train:
             
-        #for batch in tl.iterate.minibatches(inputs=X_train, targets=y_train, ########???
-        #                           batch_size=1, shuffle=True):
-        #    images, labels = batch
+        for batch in tl.iterate.minibatches(inputs=X_train, targets=y_train, ########???
+                                   batch_size=batch_size, shuffle=True):
+            images, labels = batch
             #step_time = time.time()
 
             ## update network
             _, _dice, out = sess.run([train_op,
                     dice_loss, net.outputs],
-                    {t_image: image, t_seg: label})
+                    {t_image: images, t_seg: labels})
             total_dice += _dice
             n_batch += 1
             

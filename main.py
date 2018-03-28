@@ -10,6 +10,6 @@ from DataFactory import DataPreprocessor
 import train
 
 dp = DataPreprocessor()
-X_train,y_train,X_test,y_test = dp.getAllData()
+X_train,y_train,X_test,y_test = dp.getAllData(dataSize = 'all')
 
-train.train(X_train,y_train)
+#train.train(X_train,y_train)
