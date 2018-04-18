@@ -10,7 +10,10 @@ import tensorlayer as tl
 import numpy as np
 
 def u_net(x, is_train=False, reuse=False, n_out=1):
-    _, nx, ny, nz = x.get_shape().as_list()
+    _, nx, ny, nz = x.shape
+    nx = int(nx)
+    ny = int(ny)
+    nz = int(nz)
     with tf.variable_scope("u_net", reuse=reuse):
         tl.layers.set_name_reuse(reuse)
         inputs = tl.layers.InputLayer(x, name='inputs')
