@@ -71,8 +71,6 @@ def train(X_train, y_train,X_test,y_test):
             _dice = 1 - _dice
             total_dice += _dice
             n_batch += 1
-            print("out shape")
-            print(out.shape)
             
             ## check model fail
             if np.isnan(_dice):
