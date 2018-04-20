@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 
 def train(X_train, y_train,X_test,y_test):
     ###======================== HYPER-PARAMETERS ============================###
-    batch_size = 90
+    batch_size = 10
     lr = 0.0001 
     # lr_decay = 0.5
     # decay_every = 100
@@ -62,8 +62,6 @@ def train(X_train, y_train,X_test,y_test):
         for batch in tl.iterate.minibatches(inputs=X_train, targets=y_train,
                                    batch_size=batch_size, shuffle=True):
             images, labels = batch
-            images.shape
-            labels.shape
             #step_time = time.time()
 
             ## update network
@@ -73,6 +71,8 @@ def train(X_train, y_train,X_test,y_test):
             _dice = 1 - _dice
             total_dice += _dice
             n_batch += 1
+            print("out shape")
+            print(out.shape)
             
             ## check model fail
             if np.isnan(_dice):
