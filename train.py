@@ -19,7 +19,7 @@ def train(X_train, y_train,X_test,y_test):
     # lr_decay = 0.5
     # decay_every = 100
     beta1 = 0.9
-    n_epoch = 30
+    n_epoch = 45
     
     #print_freq_step = 100
     
@@ -66,7 +66,7 @@ def train(X_train, y_train,X_test,y_test):
 
             ## update network
             _, _dice, out = sess.run([train_op,
-                    dice_loss, net.outputs],
+                    loss, net.outputs],
                     {t_image: images, t_seg: labels})
             _dice = 1 - _dice
             total_dice += _dice
