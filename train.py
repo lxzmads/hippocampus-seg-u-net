@@ -36,12 +36,12 @@ def train(X_train, y_train,X_test,y_test):
     ###======================== DEFINE LOSS =========================###
     ## train losses
     out_seg = net.outputs
-    dice_loss = 1 - tl.cost.dice_coe(out_seg, t_seg, axis=[0,1,2,3])#, 'jaccard', epsilon=1e-5)
+    dice_loss = 1 - tl.cost.dice_coe(out_seg, t_seg*(-1), axis=[0,1,2,3])#, 'jaccard', epsilon=1e-5)
     loss = dice_loss
     
     ## test losses
     test_out_seg = net_test.outputs
-    test_dice_loss = 1 - tl.cost.dice_coe(test_out_seg, t_seg, axis=[0,1,2,3])#, 'jaccard', epsilon=1e-5)
+    test_dice_loss = 1 - tl.cost.dice_coe(test_out_seg, t_seg*(-1), axis=[0,1,2,3])#, 'jaccard', epsilon=1e-5)
     
     ###======================== DEFINE TRAIN OPTS =======================###
     t_vars = tl.layers.get_variables_with_name('u_net', True, True)
