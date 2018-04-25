@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Mar 20 17:33:08 2018
-
 @author: yangyr
 """
 
@@ -10,7 +9,7 @@ import tensorflow as tf
 import tensorlayer as tl
 import time
 import model
-import matplotlib.pyplot as plt
+import pickle
 
 def train(X_train, y_train,X_test,y_test):
     ###======================== HYPER-PARAMETERS ============================###
@@ -19,7 +18,7 @@ def train(X_train, y_train,X_test,y_test):
     # lr_decay = 0.5
     # decay_every = 100
     beta1 = 0.9
-    n_epoch = 10
+    n_epoch = 45
     
     #print_freq_step = 100
     
@@ -41,7 +40,7 @@ def train(X_train, y_train,X_test,y_test):
     
     ## test losses
     test_out_seg = net_test.outputs
-    test_dice_loss = 1 - tl.cost.dice_coe(test_out_seg*(-1), t_seg, axis=[0,1,2,3])#, 'jaccard', epsilon=1e-5)
+    test_dice_loss = 1 - tl.cost.dice_coe(test_out_seg, t_seg*(-1), axis=[0,1,2,3])#, 'jaccard', epsilon=1e-5)
     
     ###======================== DEFINE TRAIN OPTS =======================###
     t_vars = tl.layers.get_variables_with_name('u_net', True, True)
@@ -63,8 +62,7 @@ def train(X_train, y_train,X_test,y_test):
                                    batch_size=batch_size, shuffle=True):
             images, labels = batch
             #step_time = time.time()
-            #print("images",images)
-            #print("labels",labels)
+
             ## update network
             _, _dice, out = sess.run([train_op,
                     loss, net.outputs],
@@ -81,13 +79,9 @@ def train(X_train, y_train,X_test,y_test):
         
         dices.append(total_dice/n_batch)
         print(" ** Epoch [%d/%d] train dice: %f took %fs (2d with distortion)" %
-              (epoch, n_epoch, total_dice/n_batch, time.time()-epoch_time))  
-        
-    tl.files.save_npz(net.all_params, name='u_net_model.npz', sess=sess)
-    plt.figure()
-    plt.plot(range(0, n_epoch+1),dices)
-    plt.show()
-    
+              (epoch, n_epoch, total_dice/n_batch, time.time()-epoch_time)) 
+    tl.files.save_npz(net.all_params, name='/hippocampus_seg_net.npz', sess=sess)
+   
     total_dice_test, n_batch = 0, 0
     epoch_time = time.time()
     for batch in tl.iterate.minibatches(inputs=X_test, targets=y_test,
@@ -109,4 +103,6 @@ def train(X_train, y_train,X_test,y_test):
             exit(" ** NaN found in output images during training, stop training")
 
     print(" ** Epoch [%d/%d] test dice: %f took %fs (2d with distortion)" %
-          (epoch, n_epoch, total_dice_test/n_batch, time.time()-epoch_time))  
+          (epoch, n_epoch, total_dice_test/n_batch, time.time()-epoch_time))
+    
+    pickle.dump(dices, open('dices.txt', 'wb'))
