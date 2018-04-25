@@ -19,7 +19,7 @@ def train(X_train, y_train,X_test,y_test):
     # lr_decay = 0.5
     # decay_every = 100
     beta1 = 0.9
-    n_epoch = 30
+    n_epoch = 10
     
     #print_freq_step = 100
     
@@ -36,12 +36,12 @@ def train(X_train, y_train,X_test,y_test):
     ###======================== DEFINE LOSS =========================###
     ## train losses
     out_seg = net.outputs
-    dice_loss = 1 - tl.cost.dice_coe(out_seg, t_seg, axis=[0,1,2,3])#, 'jaccard', epsilon=1e-5)
+    dice_loss = 1 - tl.cost.dice_coe(out_seg, t_seg*(-1), axis=[0,1,2,3])#, 'jaccard', epsilon=1e-5)
     loss = dice_loss
     
     ## test losses
     test_out_seg = net_test.outputs
-    test_dice_loss = 1 - tl.cost.dice_coe(test_out_seg, t_seg, axis=[0,1,2,3])#, 'jaccard', epsilon=1e-5)
+    test_dice_loss = 1 - tl.cost.dice_coe(test_out_seg*(-1), t_seg, axis=[0,1,2,3])#, 'jaccard', epsilon=1e-5)
     
     ###======================== DEFINE TRAIN OPTS =======================###
     t_vars = tl.layers.get_variables_with_name('u_net', True, True)
@@ -63,10 +63,11 @@ def train(X_train, y_train,X_test,y_test):
                                    batch_size=batch_size, shuffle=True):
             images, labels = batch
             #step_time = time.time()
-
+            #print("images",images)
+            #print("labels",labels)
             ## update network
             _, _dice, out = sess.run([train_op,
-                    dice_loss, net.outputs],
+                    loss, net.outputs],
                     {t_image: images, t_seg: labels})
             _dice = 1 - _dice
             total_dice += _dice
